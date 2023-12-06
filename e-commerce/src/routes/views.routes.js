@@ -30,4 +30,7 @@ router.get('/products', jwtAuth, ViewsController.renderViewsProducts);
 //ruta hardcodeada localhost:8080/cart/652832e702a5657f7db4c22e
 router.get('/cart/:cid', ViewsController.renderViewsCart);
 
+//http://localhost:8080/mokingProducts
+router.get('/mokingProducts',ViewsController.mockingProducts)
+
 export {router as viewsRouter};//lo exportamos para poder importarlo en "app.js".

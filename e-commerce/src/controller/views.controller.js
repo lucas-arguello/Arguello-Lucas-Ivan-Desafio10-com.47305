@@ -1,5 +1,6 @@
 import { CartsService } from "../service/carts.service.js";
 import { ProductsService } from "../service/products.service.js";
+import { generateProducts } from "../helpers/mock.js";
 
 export class ViewsController {
     
@@ -230,6 +231,20 @@ export class ViewsController {
             }
         } catch (error) {
             return res.status(500).json({ message: error.message });
+        }
+    }
+
+    static mockingProducts = async (req, res) => {
+        try {
+            let products = []
+            for (let i = 0; i < 100; i++) {
+                const items = generateProducts()
+                products.push(items)
+            }
+            res.json({status: "success", data: products})
+        } catch (error) {
+            console.log('error mockingProducts controller', error.message);
+            res.json( { status: "error", message: error.message });
         }
     }
 };

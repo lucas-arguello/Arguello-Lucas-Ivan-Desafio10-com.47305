@@ -1,27 +1,29 @@
 import { ProductsService} from '../service/products.service.js'
+import { CustomError } from '../service/errors/customErrors.js';
+import { generateProductErrorInfo } from '../service/errors/infoDictionary.js';
+import { EError } from '../service/errors/enums.js';
 
 
 export class ProductsController {
 
-    static createProduct = async (req, res) => {
-        try{
-            const productInfo = req.body; //captamos la info del nuevo producto.
-                        
-            //Validamos si NO se esta recibiendo INFO del producto en la variable "productInfo", y mostramos el error.
-            if (!productInfo) {
-                throw new Error("La solicitud está vacía");
+    static createProduct = async (req, res, next) => {
+        try {
+            console.log('paso por createProduct controller');
+            const { title, description, code, price, status, stock, category, thumbnails } = req.body;
+            if (!title || !description || !code || !price || !status || !stock || !category || !thumbnails) {
+                CustomError.createError({
+                    name: "Error al crear el producto",
+                    cause: generateProductErrorInfo(req.body),
+                    message: "Campos incompletos",
+                    code: EError.INVALID_TYPES_ERROR
+                })
             }
-            //con la info. recibida de la peticion POST, creamos el producto con el metodo "createProduct".
-            const newProduct = await ProductsService.createProduct(productInfo);
-            //respuesta para que el cliente, del nuevo producto creado.
-            res.json({message:"El producto fue creado correctamente", data:newProduct});
-    
-            console.log("Un producto fue creado: ", newProduct);
-    
-        }catch(error){
-            //respuesta para que el cliente sepa que la peticion no fue resuelta correctamente
-            res.json({status:"error",message: error.message}) 
-        };
+            const product = req.body;
+            const newProduct = await ProductsService.createProduct(product);
+            res.json({ status: 'success', message: "Producto creado", data: newProduct });
+        } catch (error) {
+            next(error);
+        }
     }
 
     static getProducts = async (req, res) => {

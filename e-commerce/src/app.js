@@ -6,6 +6,7 @@ import path from "path";
 //import { productsService } from "./dao/index.js"; 
 import { ProductsService } from './service/products.service.js';
 import { ChatService } from './service/chat.service.js';
+import {errorHandler } from './middlewares/errors/errorHandler.js';
 
 import {engine} from "express-handlebars";
 import {Server} from "socket.io";
@@ -137,6 +138,8 @@ io.on("connection", async (socket)=> {
     
 
 });
+
+app.use(errorHandler)
 //
 
 
